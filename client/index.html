@@ -1,0 +1,37 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real-Time Log Viewer</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body { font-family: monospace; padding: 1em; background: #f0f0f0; }
+    #log { white-space: pre-wrap; background: #fff; padding: 1em; border: 1px solid #ccc; height: 500px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <h1>Log Monitor (Tail -f)</h1>
+  <div id="log"></div>
+
+  <script>
+    const socket = io();
+
+    const logDiv = document.getElementById('log');
+
+    // Append new message lines safely, scroll to bottom
+    function appendLines(lines) {
+      logDiv.textContent += lines + '\n';
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    socket.on('fileEvent', (message) => {
+      appendLines(message);
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+  </script>
+</body>
+</html>
